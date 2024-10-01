@@ -1,11 +1,13 @@
+//      ¯\_(ツ)_/¯
+// g++ main.cpp -o out.exe
 #include <iostream>
-#include "../lib/sqlite3/sqlite3.h"
 
 
 int main() {
 
-    // PRINTING HELLO WORLD
-    std::cout << "Hello, World!" << std::endl;
+    std::cout << "Hello" << std::endl;
+
+
 
     return 0;
 }
