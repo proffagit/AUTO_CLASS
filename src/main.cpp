@@ -13,8 +13,18 @@
  // MAIN FUNCTION
 int main() {
 
+    print("reading text data...");
+    std::vector<std::string> words = readWordsFromFile("../../en_wiki_31M_token_196k_words.txt");
+    print("OK");
 
-   print(compareWordContexts("dog", "car", "../../en_wiki_31M_token_196k_words.txt"));
+    compareWordContexts("dog", "car", words);
+    compareWordContexts("dog", "cat", words);
+    compareWordContexts("she", "he", words);
+
+   /*  print(compareWordContexts("dog", "car", words));
+    print(compareWordContexts("dog", "cat", words));
+    print(compareWordContexts("she", "he", words)); */
+
     
     return 0;
 }

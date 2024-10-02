@@ -10,8 +10,8 @@
 
 // STUBBS
 std::vector<std::string> readWordsFromFile(const std::string& filename);
-float jaccardSimilarity(const std::vector<std::string>& set1, const std::vector<std::string>& set2);
-float compareWordContexts(std::string comparison_word1, std::string comparison_word2, std::string large_text_data_file_path);
+//float jaccardSimilarity(const std::vector<std::string>& set1, const std::vector<std::string>& set2);
+//float compareWordContexts(std::string comparison_word1, std::string comparison_word2, std::vector<std::string> words);
 
 
 
@@ -21,6 +21,7 @@ float compareWordContexts(std::string comparison_word1, std::string comparison_w
  * std::vector<std::string> words = readWordsFromFile(filename);
  ******************************************************************************/
 std::vector<std::string> readWordsFromFile(const std::string& filename) {
+
     std::vector<std::string> words;
     std::ifstream file(filename);
     std::string word;
@@ -38,29 +39,24 @@ std::vector<std::string> readWordsFromFile(const std::string& filename) {
 }
 
 
-
-
-
-
 /*******************************************************************************
  * JACCARD SIMILARITY COEFFICIENT
  * Calculates the Jaccard similarity coefficient between two vectors of strings.
  * Returns a float value between 0 and 1, where 1 indicates identical sets.
  ******************************************************************************/
-float jaccardSimilarity(const std::vector<std::string>& set1, const std::vector<std::string>& set2) {
-    std::unordered_set<std::string> union_set;
+float jaccardSimilarity(const std::unordered_set<std::string>& set1, const std::unordered_set<std::string>& set2) {
     std::unordered_set<std::string> intersection_set;
-
-    // Add all elements to the union set
-    for (const auto& elem : set1) union_set.insert(elem);
-    for (const auto& elem : set2) union_set.insert(elem);
 
     // Find intersection
     for (const auto& elem : set1) {
-        if (std::find(set2.begin(), set2.end(), elem) != set2.end()) {
+        if (set2.find(elem) != set2.end()) {
             intersection_set.insert(elem);
         }
     }
+
+    // Calculate union as the total unique elements in both sets
+    std::unordered_set<std::string> union_set(set1);
+    union_set.insert(set2.begin(), set2.end());
 
     // Calculate Jaccard similarity coefficient
     return static_cast<float>(intersection_set.size()) / union_set.size();
@@ -68,10 +64,96 @@ float jaccardSimilarity(const std::vector<std::string>& set1, const std::vector<
 
 
 
+/*******************************************************************************
+ * FUNCTION TO COMPARE CONTEXTS OF WORDS IN A TEXT DATA
+ * Compares the context of two words and returns a Jaccard similarity score.
+ * 
+ * USAGE
+ * std::vector<std::string> words = readWordsFromFile("../../en_wiki_31M_token_196k_words.txt");
+ * compareWordContexts("dog", "car", words);
+ ******************************************************************************/
+float compareWordContexts(std::string comparison_word1, std::string comparison_word2, const std::vector<std::string>& words) {
 
-float compareWordContexts(std::string comparison_word1, std::string comparison_word2, std::string large_text_data_file_path) {
+    std::unordered_set<std::string> similar1;
+    std::unordered_set<std::string> similar2;
 
-    std::vector<std::string> words = readWordsFromFile(large_text_data_file_path);
+    std::unordered_set<std::string> similar3;
+    std::unordered_set<std::string> similar4;
+
+    /* LOOP THROUGH WORDS */
+    for (size_t i = 1; i < words.size() - 1; ++i) { // Avoid out-of-bounds access
+        // CHECK IF THE WORD EQUALS comparison_word1
+        if (words[i] == comparison_word1) {
+            similar1.insert(words[i - 1]);  // Previous word
+            similar2.insert(words[i + 1]);  // Next word
+        }
+
+        // CHECK IF THE WORD EQUALS comparison_word2
+        if (words[i] == comparison_word2) {
+            similar3.insert(words[i - 1]);  // Previous word
+            similar4.insert(words[i + 1]);  // Next word
+        }
+    }
+
+    // Calculate the Jaccard similarity for before and after contexts
+    float res1 = jaccardSimilarity(similar1, similar3);
+    float res2 = jaccardSimilarity(similar2, similar4);
+
+    return (res1 + res2) / 2;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*******************************************************************************
+ * USAGE
+ * std::vector<std::string> words = readWordsFromFile("../../en_wiki_31M_token_196k_words.txt");
+ * compareWordContexts("dog", "car", words);
+ ******************************************************************************/
+
+/* float compareWordContexts(std::string comparison_word1, std::string comparison_word2, std::vector<std::string> words) {
 
 
     std::vector<std::string> similar1;
@@ -80,16 +162,13 @@ float compareWordContexts(std::string comparison_word1, std::string comparison_w
     std::vector<std::string> similar3;
     std::vector<std::string> similar4;
 
-    /* LOOP THROUGH WORDS */
+    // LOOP THROUGH WORDS 
     for (size_t i = 0; i < words.size(); ++i) {
-        // CHECK IF THE WORD EQUALS "find"
+        // CHECK IF THE WORD EQUALS "word"
         if (words[i] == comparison_word1) {
             // PRINT THE PREVIOUS WORD (IF EXISTS) AND A SPECIAL MESSAGE
 
-            /* std::string wrd1 = words[i-1];
-            std::string wrd2 = words[i+1]; */
-
-            /* CHECK FOR UNIQUE WORDS BEFORE AND AFTER*/
+            // CHECK FOR UNIQUE WORDS BEFORE AND AFTER
             if (std::find(similar1.begin(), similar1.end(), words[i-1]) == similar1.end()) {
                 similar1.push_back(words[i-1]);
             }
@@ -101,12 +180,8 @@ float compareWordContexts(std::string comparison_word1, std::string comparison_w
         }
 
         if (words[i] == comparison_word2) {
-            // PRINT THE PREVIOUS WORD (IF EXISTS) AND A SPECIAL MESSAGE
 
-            /* std::string wrd1 = words[i-1];
-            std::string wrd2 = words[i+1]; */
-
-            /* CHECK FOR UNIQUE WORDS BEFORE AND AFTER*/
+            // CHECK FOR UNIQUE WORDS BEFORE AND AFTER
             if (std::find(similar3.begin(), similar3.end(), words[i-1]) == similar3.end()) {
                 similar3.push_back(words[i-1]);
             }
@@ -115,7 +190,6 @@ float compareWordContexts(std::string comparison_word1, std::string comparison_w
                 similar4.push_back(words[i+1]);
             }
 
-           // print(words[i-1], words[i], words[i+1]);
             
         }
 
@@ -127,6 +201,6 @@ float compareWordContexts(std::string comparison_word1, std::string comparison_w
     return (res1+res2)/2;
 
 
-}
+} */
 
 
