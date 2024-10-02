@@ -2,12 +2,10 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <unordered_set> // Added for jaccardSimilarity function
 
 // stubbs
-std::vector<std::string> readWordsFromFile(const std::string& filename);
-
-
-
+/* std::vector<std::string> readWordsFromFile(const std::string& filename); */
 
 /*******************************************************************************
  * PRINT FUNCTION
@@ -26,25 +24,8 @@ void print(const Args&... args) {
 }
 
 
-/*******************************************************************************
- * USAGE
- * std::string filename = "../../en_wiki_31M_token_196k_words.txt";
- * std::vector<std::string> words = readWordsFromFile(filename);
- ******************************************************************************/
-std::vector<std::string> readWordsFromFile(const std::string& filename) {
-    std::vector<std::string> words;
-    std::ifstream file(filename);
-    std::string word;
 
-    if (file.is_open()) {
-        while (file >> word) {
-            words.push_back(word);
-        }
-        file.close();
-    } else {
-        std::cerr << "Unable to open file: " << filename << std::endl;
-    }
 
-    return words;
-}
+
+
 
