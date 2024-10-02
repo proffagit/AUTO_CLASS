@@ -41,7 +41,7 @@ std::vector<std::string> readWordsFromFile(const std::string& filename) {
 
 /*******************************************************************************
  * JACCARD SIMILARITY COEFFICIENT
- * Calculates the Jaccard similarity coefficient between two vectors of strings.
+ * Calculates the Jaccard similarity coefficient between two unordered_set list of strings.
  * Returns a float value between 0 and 1, where 1 indicates identical sets.
  ******************************************************************************/
 float jaccardSimilarity(const std::unordered_set<std::string>& set1, const std::unordered_set<std::string>& set2) {
