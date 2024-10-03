@@ -4,14 +4,16 @@
 #include <iostream>
 #include <unordered_set> // Added for jaccardSimilarity function
 #include <algorithm>
+#include <thread>
+#include <mutex>
 
 
 
 
 // STUBBS
 std::vector<std::string> readWordsFromFile(const std::string& filename);
-//float jaccardSimilarity(const std::vector<std::string>& set1, const std::vector<std::string>& set2);
-//float compareWordContexts(std::string comparison_word1, std::string comparison_word2, std::vector<std::string> words);
+float jaccardSimilarity(const std::unordered_set<std::string>& set1, const std::unordered_set<std::string>& set2);
+float compareWordContexts(std::string comparison_word1, std::string comparison_word2, const std::vector<std::string>& words);
 
 
 
@@ -101,6 +103,16 @@ float compareWordContexts(std::string comparison_word1, std::string comparison_w
 
     return (res1 + res2) / 2;
 }
+
+// Function to compare contexts in a separate thread
+/* void threadCompare(const std::string& comparison_word1, const std::string& comparison_word2, 
+                   const std::vector<std::string>& words, std::vector<float>& scores, size_t index, std::mutex& mtx) {
+    float score = compareWordContexts(comparison_word1, comparison_word2, words);
+    
+    // Lock mutex to protect shared resource
+    std::lock_guard<std::mutex> lock(mtx);
+    scores[index] = score; // Update the score for this comparison
+} */
 
 
 

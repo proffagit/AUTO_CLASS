@@ -5,10 +5,13 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+
 #include <thread>
+#include <mutex>
 
 #include "heavy.cpp" // --
 #include "light.cpp" // --
+
 
 
 
@@ -27,6 +30,9 @@ int main() {
     std::vector<std::string> wrd = readWordsFromFile("../../wordlist10k.txt");
 
 
+    std::mutex mtx; // Mutex for thread-safe access to scores
+
+
     // CREATE AN ARRAY OF float WITH SIZE OF 10K // stores similarity scored
     std::array<float, 10000> scores; // 
 
@@ -40,17 +46,8 @@ int main() {
         
         for (i2; i2 < range; ++i2) {
 
-            //print(wrd[i1], wrd[i2]);
 
-            float res = compareWordContexts(wrd[i1], wrd[i2], words);
-            //print(wrd[i1], wrd[i2],res);
-
-            if (i2 % 10 == 0)
-            {
-                print(wrd[i1], wrd[i2],res);
-            }
-            
-
+            scores[i2] = compareWordContexts(wrd[i1], wrd[i2], words);
 
 
         }
